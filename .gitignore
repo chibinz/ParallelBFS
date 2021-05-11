@@ -1,5 +1,9 @@
 build/
 
+# Benchmark inputs
+*.gz
+*.txt
+
 # Prerequisites
 *.d
 
