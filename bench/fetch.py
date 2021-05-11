@@ -2,15 +2,19 @@ import subprocess
 import os.path
 
 dataset_url = "https://snap.stanford.edu/data/"
-benches = {
-    "web-Stanford.txt",
-    "roadNet-CA.txt",
-    "com-Orkut.all.cmty.txt",
-    "soc-LiveJournal1.txt",
-}
+bench_urls = [
+    "https://snap.stanford.edu/data/web-Stanford.txt.gz",
+    "https://snap.stanford.edu/data/roadNet-CA.txt.gz",
+    "https://snap.stanford.edu/data/bigdata/communities/com-orkut.all.cmty.txt.gz",
+    "https://snap.stanford.edu/data/soc-LiveJournal1.txt.gz",
+]
 
-for b in filter(lambda x: not os.path.exists(x), benches):
-    name = b + ".gz"
-    url = dataset_url + name
-    subprocess.run(["wget", "-nc", url]).check_returncode()
-    subprocess.run(["gzip", "-dfk", name]).check_returncode()
+benches = list(map(lambda s: s.split("/")[-1][:-7], bench_urls))
+
+print(benches)
+
+for i in range(len(benches)):
+    if os.path.exists(benches[i] + ".txt"):
+        continue
+    subprocess.run(["wget", "-nc", bench_urls[i]]).check_returncode()
+    subprocess.run(["gzip", "-dfk", benches[i] + ".txt.gz"]).check_returncode()
