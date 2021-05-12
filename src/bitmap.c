@@ -5,7 +5,7 @@
 #include "types.h"
 
 bitmap *bitmap_new(usize capacity) {
-  u32 *map = malloc(sizeof(u32) * (capacity / 32 + 1));
+  u32 *map = calloc((capacity / 32 + 1), sizeof(u32));
   bitmap *ret = malloc(sizeof(bitmap));
 
   *ret = (bitmap){capacity, map};
