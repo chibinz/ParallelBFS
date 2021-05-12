@@ -5,36 +5,36 @@
 /// 3 - tuple containing single coordinate list matrix element
 typedef struct {
   /// Row index
-  u32 row;
+  u32 i;
   /// Column index
-  u32 col;
+  u32 j;
   /// Actual value
-  u32 val;
-} mat_coo_tup;
+  u32 v;
+} coo_tup;
 
 /// Structure for holding sparse matrix in 'Coordinate List' form
 typedef struct {
-  /// Array of 3 - tuples
-  mat_coo_tup *tup;
   /// Number of rows
-  usize nrow;
+  usize m;
   /// Number of columns
-  usize ncol;
+  usize n;
   /// Number of non-zero values
-  usize nval;
-} mat_coo;
+  usize nz;
+  /// Array of 3 - tuples
+  coo_tup *tup;
+} coo;
 
 /// Allocate memory
-mat_coo *mat_coo_new(usize nrow, usize ncol, usize nval);
+coo *coo_new(usize m, usize n, usize nz);
 
 /// Read from matrix market file into coo representation
-mat_coo *mat_coo_from_mkt(FILE *mkt);
+coo *coo_from_mkt(FILE *mkt);
 
 /// Write coo matrix to matrix market format
-void mat_coo_to_mkt(mat_coo *mat, FILE *mkt);
+void coo_to_mkt(coo *mat, FILE *mkt);
 
 /// Free structure and inner fields
-void mat_coo_free(mat_coo *mat);
+void coo_free(coo *mat);
 
 /// Sort matrix first by its row index, and then column index
-void mat_coo_sort(mat_coo *mat);
+void coo_sort(coo *mat);

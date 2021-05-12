@@ -4,51 +4,49 @@
 #include "coo.h"
 #include "types.h"
 
-mat_coo *mat_coo_new(usize nrow, usize ncol, usize nval) {
-  mat_coo_tup *tup = malloc(sizeof(mat_coo_tup) * nval);
-  mat_coo *ret = malloc(sizeof(mat_coo));
+coo *coo_new(usize m, usize n, usize nz) {
+  coo_tup *tup = malloc(sizeof(coo_tup) * nz);
+  coo *ret = malloc(sizeof(coo));
 
-  *ret = (mat_coo){tup, nrow, ncol, nval};
+  *ret = (coo){m, n, nz, tup};
 
   return ret;
 }
 
-mat_coo *mat_coo_from_mkt(FILE *mkt) {
-  usize nrow, ncol, nval, i = 0;
-  fscanf(mkt, "%lu %lu %lu\n", &nrow, &ncol, &nval);
+coo *coo_from_mkt(FILE *mkt) {
+  usize m, n, nz, i = 0;
+  fscanf(mkt, "%lu %lu %lu\n", &m, &n, &nz);
 
-  mat_coo *ret = mat_coo_new(nrow, ncol, nval);
-  while (fscanf(mkt, "%u %u %u\n", &ret->tup[i].row, &ret->tup[i].col,
-                &ret->tup[i].val) != EOF) {
+  coo *ret = coo_new(m, n, nz);
+  while (fscanf(mkt, "%u %u %u\n", &ret->tup[i].i, &ret->tup[i].j,
+                &ret->tup[i].v) != EOF) {
     i += 1;
   }
 
   return ret;
 }
 
-void mat_coo_to_mkt(mat_coo *mat, FILE *mkt) {
-  fprintf(mkt, "%lu %lu %lu\n", mat->nrow, mat->ncol, mat->nval);
+void coo_to_mkt(coo *mat, FILE *mkt) {
+  fprintf(mkt, "%lu %lu %lu\n", mat->m, mat->n, mat->nz);
 
-  for (usize i = 0; i < mat->nval; i += 1) {
-    fprintf(mkt, "%u %u %u\n", mat->tup[i].row, mat->tup[i].col,
-            mat->tup[i].val);
+  for (usize i = 0; i < mat->nz; i += 1) {
+    fprintf(mkt, "%u %u %u\n", mat->tup[i].i, mat->tup[i].j,
+            mat->tup[i].v);
   }
 }
 
-void mat_coo_free(mat_coo *mat) {
+void coo_free(coo *mat) {
   free(mat->tup);
   free(mat);
 }
 
 static int cmp_func(const void *a, const void *b) {
-  const mat_coo_tup *ta = a;
-  const mat_coo_tup *tb = b;
-  u32 drow = ta->row - tb->row;
-  u32 dcol = ta->col - tb->col;
+  const coo_tup *ta = a;
+  const coo_tup *tb = b;
+  u32 drow = ta->i - tb->i;
+  u32 dcol = ta->j - tb->j;
 
   return drow == 0 ? dcol : drow;
 }
 
-void mat_coo_sort(mat_coo *mat) {
-  qsort(mat->tup, mat->nval, sizeof(mat_coo_tup), cmp_func);
-}
+void coo_sort(coo *mat) { qsort(mat->tup, mat->nz, sizeof(coo_tup), cmp_func); }

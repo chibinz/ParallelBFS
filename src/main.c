@@ -11,10 +11,10 @@ int main(int argc, char **argv) {
 
   FILE *in = fopen(argv[1], "r");
 
-  mat_coo *coo = mat_coo_from_mkt(in);
-  mat_coo_sort(coo);
-  mat_coo_to_mkt(coo, stdout);
-  mat_coo_free(coo);
+  coo *coo = coo_from_mkt(in);
+  coo_sort(coo);
+  coo_to_mkt(coo, stdout);
+  coo_free(coo);
 
   fclose(in);
 
