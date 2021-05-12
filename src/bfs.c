@@ -11,6 +11,7 @@
 void bfs(csr *adj, usize src) {
   // Adjacency matrix should be square matrix
   assert(adj->m == adj->n);
+
   queue *q = queue_new(adj->m);
   bitmap *b = bitmap_new(adj->m);
 

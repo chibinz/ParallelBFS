@@ -31,12 +31,11 @@ int main(int argc, char **argv) {
 
   coo *coo = coo_from_mkt(in);
   coo_sort(coo);
-
   coo_sort(&simple);
-  csr *csr = csr_from_coo(&simple);
 
+  csr *csr = csr_from_coo(coo);
+  bfs(csr, 1);
   print_csr(csr);
-  bfs(csr, 0);
 
   csr_free(csr);
   coo_free(coo);
