@@ -1,5 +1,6 @@
 import subprocess
 import os.path
+import re
 
 dataset_url = "https://snap.stanford.edu/data/"
 bench_urls = [
@@ -20,7 +21,14 @@ for (url, b) in zip(bench_urls, benches):
     subprocess.run(["gzip", "-dfk", b + ".txt.gz"]).check_returncode()
 
 for b in benches[:1]:
+    s = ""
     with open(b + ".txt", "r") as f:
-        s = "\n".join(map(lambda s: s + "\t" + "1", filter(lambda l: not l.startswith("#"), f.read().splitlines())))
+        for l in f.read().splitlines():
+            if l.startswith("#"):
+                if "Nodes" in l and "Edges" in l:
+                    s += re.sub(r"# Nodes: (\d+) Edges: (\d+)", r"\1\t\1\t\2\n", l)
+            else:
+                s += l + "\t" + "1" + "\n"
+
     with open(b + ".in", "w") as f:
         f.write(s)
