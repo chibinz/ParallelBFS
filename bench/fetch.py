@@ -16,7 +16,7 @@ print(benches)
 for (url, b) in zip(bench_urls, benches):
     if os.path.exists(b + ".txt"):
         continue
-    subprocess.run(["wget", "-nc", url).check_returncode()
+    subprocess.run(["wget", "-nc", url]).check_returncode()
     subprocess.run(["gzip", "-dfk", b + ".txt.gz"]).check_returncode()
 
 for b in benches[:1]:
