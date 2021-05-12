@@ -1,3 +1,4 @@
+#include "coo.h"
 #include "types.h"
 
 /// 'Compressed Sparse Row' representation of sparse matrix
@@ -17,5 +18,7 @@ typedef struct matrix_csr {
 } csr;
 
 csr *csr_new(usize m, usize n, usize nz);
+
+csr *csr_from_coo(coo* mat);
 
 void csr_free(csr *mat);

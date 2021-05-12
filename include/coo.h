@@ -6,9 +6,9 @@
 /// 3 - tuple containing single coordinate list matrix element
 typedef struct {
   /// Row index
-  u32 i;
+  usize i;
   /// Column index
-  u32 j;
+  usize j;
   /// Actual value
   u32 v;
 } coo_tup;

@@ -18,8 +18,11 @@ coo *coo_from_mkt(FILE *mkt) {
   fscanf(mkt, "%lu %lu %lu\n", &m, &n, &nz);
 
   coo *ret = coo_new(m, n, nz);
-  while (fscanf(mkt, "%u %u %u\n", &ret->tup[i].i, &ret->tup[i].j,
+  while (fscanf(mkt, "%lu %lu %u\n", &ret->tup[i].i, &ret->tup[i].j,
                 &ret->tup[i].v) != EOF) {
+    // Matrix indices start from 1...
+    ret->tup[i].i -= 1;
+    ret->tup[i].j -= 1;
     i += 1;
   }
 
@@ -30,7 +33,7 @@ void coo_to_mkt(coo *mat, FILE *mkt) {
   fprintf(mkt, "%lu %lu %lu\n", mat->m, mat->n, mat->nz);
 
   for (usize i = 0; i < mat->nz; i += 1) {
-    fprintf(mkt, "%u %u %u\n", mat->tup[i].i, mat->tup[i].j,
+    fprintf(mkt, "%lu %lu %u\n", mat->tup[i].i, mat->tup[i].j,
             mat->tup[i].v);
   }
 }
@@ -43,8 +46,8 @@ void coo_free(coo *mat) {
 static int cmp_func(const void *a, const void *b) {
   const coo_tup *ta = a;
   const coo_tup *tb = b;
-  u32 drow = ta->i - tb->i;
-  u32 dcol = ta->j - tb->j;
+  usize drow = ta->i - tb->i;
+  usize dcol = ta->j - tb->j;
 
   return drow == 0 ? dcol : drow;
 }
