@@ -36,6 +36,14 @@ csr *csr_from_coo(coo *mat) {
   return ret;
 }
 
+usize csr_row_begin(csr *mat, usize i) {
+  return mat->r[i];
+}
+
+usize csr_row_end(csr *mat, usize i) {
+  return mat->r[i + 1];
+}
+
 void csr_free(csr *mat) {
   free(mat->r);
   free(mat->c);
