@@ -2,9 +2,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "bitmap.h"
 #include "csr.h"
 #include "queue.h"
-#include "bitmap.h"
 #include "types.h"
 
 /// Serial breadth first search on csr matrix

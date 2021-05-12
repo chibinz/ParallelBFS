@@ -21,10 +21,10 @@ typedef struct matrix_csr {
 
 csr *csr_new(usize m, usize n, usize nz);
 
-csr *csr_from_coo(coo* mat);
+csr *csr_from_coo(coo *mat);
 
-usize csr_row_begin(csr* mat, usize i);
+usize csr_row_begin(csr *mat, usize i);
 
-usize csr_row_end(csr* mat, usize i);
+usize csr_row_end(csr *mat, usize i);
 
 void csr_free(csr *mat);

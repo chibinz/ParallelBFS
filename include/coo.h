@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+
 #include "types.h"
 
 /// 3 - tuple containing single coordinate list matrix element
