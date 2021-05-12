@@ -1,6 +1,8 @@
 build/
 
-# Benchmark inputs
+# Benchmark files
+*.in
+*.out
 *.gz
 *.txt
 

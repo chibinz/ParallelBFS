@@ -13,8 +13,14 @@ benches = list(map(lambda s: s.split("/")[-1][:-7], bench_urls))
 
 print(benches)
 
-for i in range(len(benches)):
-    if os.path.exists(benches[i] + ".txt"):
+for (url, b) in zip(bench_urls, benches):
+    if os.path.exists(b + ".txt"):
         continue
-    subprocess.run(["wget", "-nc", bench_urls[i]]).check_returncode()
-    subprocess.run(["gzip", "-dfk", benches[i] + ".txt.gz"]).check_returncode()
+    subprocess.run(["wget", "-nc", url).check_returncode()
+    subprocess.run(["gzip", "-dfk", b + ".txt.gz"]).check_returncode()
+
+for b in benches[:1]:
+    with open(b + ".txt", "r") as f:
+        s = "\n".join(map(lambda s: s + "\t" + "1", filter(lambda l: not l.startswith("#"), f.read().splitlines())))
+    with open(b + ".in", "w") as f:
+        f.write(s)
