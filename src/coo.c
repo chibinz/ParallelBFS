@@ -26,6 +26,15 @@ mat_coo *mat_coo_from_mkt(FILE *mkt) {
   return ret;
 }
 
+void mat_coo_to_mkt(mat_coo *mat, FILE *mkt) {
+  fprintf(mkt, "%lu %lu %lu\n", mat->nrow, mat->ncol, mat->nval);
+
+  for (usize i = 0; i < mat->nval; i += 1) {
+    fprintf(mkt, "%u %u %u\n", mat->tup[i].row, mat->tup[i].col,
+            mat->tup[i].val);
+  }
+}
+
 void mat_coo_free(mat_coo *mat) {
   free(mat->tup);
   free(mat);

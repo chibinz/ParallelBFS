@@ -9,13 +9,14 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  FILE *f = fopen(argv[1], "r");
+  FILE *in = fopen(argv[1], "r");
 
-  mat_coo *coo = mat_coo_from_mkt(f);
+  mat_coo *coo = mat_coo_from_mkt(in);
   mat_coo_sort(coo);
+  mat_coo_to_mkt(coo, stdout);
   mat_coo_free(coo);
 
-  fclose(f);
+  fclose(in);
 
   return 0;
 }

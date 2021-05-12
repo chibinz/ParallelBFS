@@ -17,18 +17,21 @@ typedef struct {
   /// Array of 3 - tuples
   mat_coo_tup *tup;
   /// Number of rows
-  u32 nrow;
+  usize nrow;
   /// Number of columns
-  u32 ncol;
+  usize ncol;
   /// Number of non-zero values
-  u32 nval;
+  usize nval;
 } mat_coo;
 
 /// Allocate memory
 mat_coo *mat_coo_new(usize nrow, usize ncol, usize nval);
 
-/// Read from matrix market file into coo format
+/// Read from matrix market file into coo representation
 mat_coo *mat_coo_from_mkt(FILE *mkt);
+
+/// Write coo matrix to matrix market format
+void mat_coo_to_mkt(mat_coo *mat, FILE *mkt);
 
 /// Free structure and inner fields
 void mat_coo_free(mat_coo *mat);
