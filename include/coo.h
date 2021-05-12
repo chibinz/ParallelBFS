@@ -16,18 +16,22 @@ typedef struct {
 typedef struct {
   /// Array of 3 - tuples
   mat_coo_tup *tup;
+  /// Number of rows
+  u32 nrow;
+  /// Number of columns
+  u32 ncol;
   /// Number of non-zero values
   u32 nval;
 } mat_coo;
 
 /// Allocate memory
-mat_coo *mat_coo_new(usize nval);
+mat_coo *mat_coo_new(usize nrow, usize ncol, usize nval);
+
+/// Read from matrix market file into coo format
+mat_coo *mat_coo_from_mkt(FILE *mkt);
 
 /// Free structure and inner fields
 void mat_coo_free(mat_coo *mat);
-
-/// Casting to u64 retrieves the first 2 field of tup concatenated together
-static int cmp_func(const void *a, const void *b);
 
 /// Sort matrix first by its row index, and then column index
 void mat_coo_sort(mat_coo *mat);
