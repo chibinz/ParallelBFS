@@ -7,5 +7,6 @@ incdir = include_directories('include')
 executable('bfs',
            'src/main.c',
            'src/coo.c',
+           'src/csr.c',
            install : true,
            include_directories : incdir)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include "types.h"
 
 /// 3 - tuple containing single coordinate list matrix element
@@ -12,8 +13,8 @@ typedef struct {
   u32 v;
 } coo_tup;
 
-/// Structure for holding sparse matrix in 'Coordinate List' form
-typedef struct {
+/// 'Coordinate List' representation of sparse matrix
+typedef struct matrix_coo {
   /// Number of rows
   usize m;
   /// Number of columns
@@ -30,7 +31,7 @@ coo *coo_new(usize m, usize n, usize nz);
 /// Read from matrix market file into coo representation
 coo *coo_from_mkt(FILE *mkt);
 
-/// Write coo matrix to matrix market format
+/// Write coo matrix to matrix market file
 void coo_to_mkt(coo *mat, FILE *mkt);
 
 /// Free structure and inner fields
