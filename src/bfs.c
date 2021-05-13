@@ -7,6 +7,9 @@
 #include "queue.h"
 #include "types.h"
 
+/// Output Format
+/// <id> <distance> <parent>
+
 /// Serial breadth first search on csr matrix
 void bfs(csr *adj, usize src) {
   // Adjacency matrix should be square matrix
