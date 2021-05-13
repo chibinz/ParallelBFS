@@ -23,6 +23,8 @@ coo *coo_from_mkt(FILE *mkt) {
     // Matrix indices start from 1...
     // ret->tup[i].i -= 1;
     // ret->tup[i].j -= 1;
+    assert(ret->tup[i].i < m);
+    assert(ret->tup[i].j < n);
     i += 1;
   }
 
