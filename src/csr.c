@@ -40,6 +40,10 @@ usize csr_row_begin(csr *mat, usize i) { return mat->r[i]; }
 
 usize csr_row_end(csr *mat, usize i) { return mat->r[i + 1]; }
 
+usize csr_row_len(csr *mat, usize i) {
+  return csr_row_end(mat, i) - csr_row_begin(mat, i);
+}
+
 void csr_free(csr *mat) {
   free(mat->r);
   free(mat->c);

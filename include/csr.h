@@ -27,4 +27,6 @@ usize csr_row_begin(csr *mat, usize i);
 
 usize csr_row_end(csr *mat, usize i);
 
+usize csr_row_len(csr *mat, usize i);
+
 void csr_free(csr *mat);

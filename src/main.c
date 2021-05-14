@@ -27,14 +27,15 @@ static void print_csr(csr *mat) {
 static void bench(csr *adj) {
   double start = omp_get_wtime();
   srand(0);
-  for (usize i = 0; i < 20; i += 1) {
-    bfs(adj, rand() % adj->m);
+  usize n = 20;
+  for (usize i = 0; i < n; i += 1) {
+    bfs_omp(adj, rand() % adj->n);
   }
   double end = omp_get_wtime();
   double duration = end - start;
   printf("Time elapsed:\t%g seconds\n", duration);
   printf("Performance:\t%g millions of edges traversed per second\n",
-         (double)(adj->nz) / (duration * 1e6));
+         (double)(adj->nz * n) / (duration * 1e6));
 }
 
 int main(int argc, char **argv) {
