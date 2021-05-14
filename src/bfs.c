@@ -25,12 +25,13 @@ bfs_result bfs(csr *adj, usize src) {
 
   queue_push(q, src);
   while (!queue_empty(q)) {
-    usize e = queue_pop(q);
-    for (usize j = csr_row_begin(adj, e); j < csr_row_end(adj, e); j += 1) {
-      if (bitmap_test_set(b, adj->c[j])) {
-        queue_push(q, adj->c[j]);
-        parent[adj->c[j]] = e;
-        distance[adj->c[j]] = distance[e] + 1;
+    usize v = queue_pop(q);
+    for (usize j = csr_row_begin(adj, v); j < csr_row_end(adj, v); j += 1) {
+      usize next = adj->c[j];
+      if (bitmap_test_set(b, next)) {
+        queue_push(q, next);
+        parent[next] = v;
+        distance[next] = distance[v] + 1;
       }
     }
   }
