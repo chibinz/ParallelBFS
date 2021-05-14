@@ -2,17 +2,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#include "bfs.h"
 #include "bitmap.h"
 #include "csr.h"
 #include "queue.h"
 #include "types.h"
-
-/// Output Format
-/// <id> <distance> <parent>
-typedef struct {
-  usize *parent;
-  usize *distance;
-} bfs_result;
 
 void write_bfs_result(bfs_result r, usize n, FILE *f) {
   for (usize i = 0; i < n; i += 1) {
@@ -20,7 +14,6 @@ void write_bfs_result(bfs_result r, usize n, FILE *f) {
   }
 }
 
-/// Serial breadth first search on csr matrix
 bfs_result bfs(csr *adj, usize src) {
   // Adjacency matrix should be square matrix
   assert(adj->m == adj->n);
