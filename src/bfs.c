@@ -24,7 +24,7 @@ void bfs(csr *adj, usize src) {
     for (usize j = csr_row_begin(adj, e); j < csr_row_end(adj, e); j += 1) {
       if (bitmap_test_set(b, adj->c[j])) {
         queue_push(q, adj->c[j]);
-        printf("%lu\n", adj->c[j]);
+        // printf("%lu\n", adj->c[j]);
       }
     }
   }

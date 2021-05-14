@@ -1,9 +1,18 @@
+#include <omp.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "bfs.h"
 #include "coo.h"
 #include "csr.h"
 #include "types.h"
+
+static coo_tup list[] = {
+    {0, 1, 1}, {0, 2, 1}, {1, 3, 1}, {1, 4, 1},
+    {2, 4, 1}, {3, 4, 1}, {3, 5, 1}, {4, 5, 1},
+};
+
+static coo simple = {6, 6, 8, list};
 
 static void print_csr(csr *mat) {
   for (usize i = 0; i < mat->m; i += 1) {
@@ -14,12 +23,18 @@ static void print_csr(csr *mat) {
   }
 }
 
-static coo_tup list[] = {
-    {0, 1, 1}, {0, 2, 1}, {1, 3, 1}, {1, 4, 1},
-    {2, 4, 1}, {3, 4, 1}, {3, 5, 1}, {4, 5, 1},
-};
-
-static coo simple = {6, 6, 8, list};
+static void bench(csr *adj) {
+  double start = omp_get_wtime();
+  srand(0);
+  for (usize i = 0; i < 20; i += 1) {
+    bfs(adj, rand() % adj->m);
+  }
+  double end = omp_get_wtime();
+  double duration = end - start;
+  printf("Time elapsed:\t%g seconds\n", duration);
+  printf("Performance:\t%g millions of edges traversed per second\n",
+         (double)(adj->nz) / (duration * 1e6));
+}
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -34,8 +49,10 @@ int main(int argc, char **argv) {
   coo_sort(&simple);
 
   csr *csr = csr_from_coo(coo);
-  bfs(csr, 1);
-  print_csr(csr);
+
+  bench(csr);
+
+  // print_csr(csr);
 
   csr_free(csr);
   coo_free(coo);

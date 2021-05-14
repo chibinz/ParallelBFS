@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -32,10 +33,10 @@ coo *coo_from_mkt(FILE *mkt) {
 }
 
 void coo_to_mkt(coo *mat, FILE *mkt) {
-  fprintf(mkt, "%lu %lu %lu\n", mat->m, mat->n, mat->nz);
+  fprintf(mkt, "%lu\t%lu\t%lu\n", mat->m, mat->n, mat->nz);
 
   for (usize i = 0; i < mat->nz; i += 1) {
-    fprintf(mkt, "%lu %lu %u\n", mat->tup[i].i, mat->tup[i].j, mat->tup[i].v);
+    fprintf(mkt, "%lu\t%lu\t%u\n", mat->tup[i].i, mat->tup[i].j, mat->tup[i].v);
   }
 }
 

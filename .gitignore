@@ -1,6 +1,9 @@
 .vscode/
 build/
 
+# Perf data
+perf.*
+
 # Benchmark files
 *.in
 *.out
