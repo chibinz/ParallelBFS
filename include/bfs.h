@@ -10,6 +10,8 @@ typedef struct {
   usize *distance;
 } bfs_result;
 
+typedef bfs_result (*bfs_func)(csr *, usize);
+
 /// Serial breadth first search on csr matrix
 bfs_result bfs(csr *adj, usize src);
 

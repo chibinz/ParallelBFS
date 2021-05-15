@@ -1,9 +1,19 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "coo.h"
 #include "csr.h"
 #include "types.h"
+
+void write_csr(csr *mat, FILE *f) {
+  for (usize i = 0; i < mat->m; i += 1) {
+    for (usize j = csr_row_begin(mat, i); j < csr_row_end(mat, i); j += 1) {
+      fprintf(f, "%lu\t", mat->c[j]);
+    }
+    fprintf(f, "\n");
+  }
+}
 
 csr *csr_new(usize m, usize n, usize nz) {
   usize *r = malloc(sizeof(usize) * (m + 1));

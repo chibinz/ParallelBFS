@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,34 +18,36 @@ static coo_tup list[] = {
 
 static coo simple = {6, 6, 8, list};
 
-__attribute__((unused)) static void print_csr(csr *mat) {
-  for (usize i = 0; i < mat->m; i += 1) {
-    for (usize j = csr_row_begin(mat, i); j < csr_row_end(mat, i); j += 1) {
-      printf("%lu\t", mat->c[j]);
-    }
-    printf("\n");
-  }
+static void test(csr *adj) {
+  bfs_result s = bfs(adj, 1);
+  bfs_result p = bfs_omp(adj, 1);
+  assert(memcmp(s.distance, p.distance, adj->n) == 0);
+  free(s.distance);
+  free(p.distance);
+  free(s.parent);
+  free(p.parent);
 }
 
-static void bench(csr *adj) {
+static double bench_one(bfs_func func, csr *adj, usize src) {
   double start = omp_get_wtime();
-  srand(1);
-  usize n = 20;
-  for (usize i = 0; i < n; i += 1) {
-    usize src = rand() % adj->n;
-    bfs_result p = bfs_omp(adj, src);
-    bfs_result s = bfs(adj, src);
-    assert(memcmp(s.distance, p.distance, adj->n) == 0);
-    free(s.distance);
-    free(s.parent);
-    free(p.parent);
-    free(p.distance);
-  }
+  bfs_result r = func(adj, src);
   double end = omp_get_wtime();
-  double duration = end - start;
-  printf("Time elapsed:\t%g seconds\n", duration);
-  printf("Performance:\t%g millions of edges traversed per second\n",
-         (double)(adj->nz * n) / (duration * 1e6));
+  free(r.distance);
+  free(r.parent);
+  return end - start;
+}
+
+static void bench_multiple(bfs_func func, csr *adj, usize n, char *name) {
+  double sum = 0.0, sum2 = 0.0;
+  for (usize i = 0; i < n; i += 1) {
+    double dt = bench_one(func, adj, rand() % adj->n);
+    sum += dt;
+    sum2 += dt * dt;
+  }
+  double mean = sum / (double)(n);
+  double stddev = sqrt((sum2 / (double)(n)) - mean * mean);
+  double edges = (double)(adj->nz) / 1e6;
+  printf("%8s\t%8.4f\t%8.4f\n", name, edges / mean, edges * stddev / mean);
 }
 
 int main(int argc, char **argv) {
@@ -58,12 +61,12 @@ int main(int argc, char **argv) {
   coo *coo = coo_from_mkt(in);
   coo_sort(coo);
   coo_sort(&simple);
-
   csr *csr = csr_from_coo(coo);
 
-  bench(csr);
-
-  // print_csr(csr);
+  test(csr);
+  printf("%8s\t%8s\t%8s\n", "", "Mean", "StdDev");
+  bench_multiple(bfs, csr, 32, "Serial");
+  bench_multiple(bfs_omp, csr, 32, "Parallel");
 
   csr_free(csr);
   coo_free(coo);
