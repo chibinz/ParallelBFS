@@ -35,7 +35,7 @@ bfs_result bfs_omp(csr *adj, usize src) {
     prefix_sum(degree, f->len + 1);
     frontier *newf = frontier_new(degree[f->len]);
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(guided)
     for (usize i = 0; i < f->len; i += 1) {
       usize v = f->node[i], index = degree[i];
       for (usize j = 0; j < csr_row_len(adj, v); j += 1) {

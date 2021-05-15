@@ -47,7 +47,8 @@ static void bench_multiple(bfs_func func, csr *adj, usize n, char *name) {
   double mean = sum / (double)(n);
   double stddev = sqrt((sum2 / (double)(n)) - mean * mean);
   double edges = (double)(adj->nz) / 1e6;
-  printf("%8s\t%8.4f\t%8.4f\n", name, edges / mean, edges * stddev / mean);
+  printf("%8s%16.4f%16.4f%16.4f\n", name, edges / mean,
+         edges * stddev / mean, mean);
 }
 
 int main(int argc, char **argv) {
@@ -64,7 +65,7 @@ int main(int argc, char **argv) {
   csr *csr = csr_from_coo(coo);
 
   test(csr);
-  printf("%8s\t%8s\t%8s\n", "", "Mean", "StdDev");
+  printf("%8s%16s%16s%16s\n", "32*Iter", "Mean/MEdges", "StdDev/MEdges", "Wall/s");
   bench_multiple(bfs, csr, 32, "Serial");
   bench_multiple(bfs_omp, csr, 32, "Parallel");
 
