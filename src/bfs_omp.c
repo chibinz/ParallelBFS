@@ -24,7 +24,6 @@ bfs_result bfs_omp(csr *adj, usize src) {
   parent[src] = src;
 
   while (!frontier_empty(f)) {
-
     // Collect vertex degrees
 #pragma omp parallel for
     for (usize i = 0; i < f->len; i += 1) {
@@ -39,6 +38,7 @@ bfs_result bfs_omp(csr *adj, usize src) {
     for (usize i = 0; i < f->len; i += 1) {
       usize v = f->node[i], index = degree[i];
       for (usize j = 0; j < csr_row_len(adj, v); j += 1) {
+        /// FIXME: Frequent cache miss here... Graph compression?
         usize next = adj->c[csr_row_begin(adj, v) + j];
         if (!bitmap_test_set(b, next)) {
           newf->node[index + j] = next;

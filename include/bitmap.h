@@ -5,7 +5,6 @@
 
 #include "types.h"
 
-
 typedef struct {
   usize capacity;
   atomic_uint *map;

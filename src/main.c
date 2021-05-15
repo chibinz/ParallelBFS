@@ -47,31 +47,36 @@ static void bench_multiple(bfs_func func, csr *adj, usize n, char *name) {
   double mean = sum / (double)(n);
   double stddev = sqrt((sum2 / (double)(n)) - mean * mean);
   double edges = (double)(adj->nz) / 1e6;
-  printf("%8s%16.4f%16.4f%16.4f\n", name, edges / mean,
+  printf("%-16s%-16.4f%-16.4f%-16.4f\n", name, edges / mean,
          edges * stddev / mean, mean);
 }
 
 int main(int argc, char **argv) {
-  if (argc != 2) {
-    printf("Usage: bfs <input>\n");
+  if (argc < 2) {
+    printf("Usage: bfs <input> ...\n");
     return -1;
   }
 
-  FILE *in = fopen(argv[1], "r");
+  for (int i = 1; i < argc; i += 1) {
+    FILE *in = fopen(argv[1], "r");
+    coo *coo = coo_from_mkt(in);
+    coo_sort(coo);
+    coo_sort(&simple);
+    csr *csr = csr_from_coo(coo);
 
-  coo *coo = coo_from_mkt(in);
-  coo_sort(coo);
-  coo_sort(&simple);
-  csr *csr = csr_from_coo(coo);
+    test(csr);
+    printf("%s\n", argv[i]);
+    printf("%-16s%-16s%-16s%-16s\n", "32*Iter", "Mean/MEdges", "StdDev/MEdges",
+           "Wall/s");
+    bench_multiple(bfs, csr, 32, "Serial(Ts)");
+    bench_multiple(bfs_omp, csr, 32, "Parallel(Tp)");
+    omp_set_num_threads(1);
+    bench_multiple(bfs_omp, csr, 32, "Parallel(T1)");
 
-  test(csr);
-  printf("%8s%16s%16s%16s\n", "32*Iter", "Mean/MEdges", "StdDev/MEdges", "Wall/s");
-  bench_multiple(bfs, csr, 32, "Serial");
-  bench_multiple(bfs_omp, csr, 32, "Parallel");
-
-  csr_free(csr);
-  coo_free(coo);
-  fclose(in);
+    csr_free(csr);
+    coo_free(coo);
+    fclose(in);
+  }
 
   return 0;
 }
