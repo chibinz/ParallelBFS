@@ -32,8 +32,8 @@ static void bench(csr *adj) {
   usize n = 20;
   for (usize i = 0; i < n; i += 1) {
     usize src = rand() % adj->n;
-    bfs_result s = bfs(adj, src);
     bfs_result p = bfs_omp(adj, src);
+    bfs_result s = bfs(adj, src);
     assert(memcmp(s.distance, p.distance, adj->n) == 0);
     free(s.distance);
     free(s.parent);

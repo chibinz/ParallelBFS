@@ -4,6 +4,7 @@ bfs_src = files(
     'bitmap.c',
     'coo.c',
     'csr.c',
+    'frontier.c',
     'main.c',
     'queue.c',
 )
