@@ -1,3 +1,4 @@
+#include <stdatomic.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -26,13 +27,16 @@ bool bitmap_get(bitmap *b, usize n) {
 }
 
 bool bitmap_test_set(bitmap *b, usize n) {
-  bool prev = bitmap_get(b, n);
+  usize index = n / 32;
+  usize offset = n % 32;
+  bool prev = !!((b->map[index] >> offset) & 1);
 
+  /// Guard to prevent unnecessary contention
   if (!prev) {
-    bitmap_set(b, n);
+    prev = !!((atomic_fetch_or(&b->map[index], 1 << offset) >> offset) & 1);
   }
 
-  return !prev;
+  return prev;
 }
 
 void bitmap_free(bitmap *b) {

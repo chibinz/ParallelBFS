@@ -28,7 +28,7 @@ bfs_result bfs(csr *adj, usize src) {
     usize v = queue_pop(q);
     for (usize j = csr_row_begin(adj, v); j < csr_row_end(adj, v); j += 1) {
       usize next = adj->c[j];
-      if (bitmap_test_set(b, next)) {
+      if (!bitmap_test_set(b, next)) {
         queue_push(q, next);
         parent[next] = v;
         distance[next] = distance[v] + 1;
