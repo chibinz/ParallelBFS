@@ -1,6 +1,8 @@
+#include <assert.h>
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "bfs.h"
@@ -15,7 +17,7 @@ static coo_tup list[] = {
 
 static coo simple = {6, 6, 8, list};
 
-static void print_csr(csr *mat) {
+__attribute__((unused)) static void print_csr(csr *mat) {
   for (usize i = 0; i < mat->m; i += 1) {
     for (usize j = csr_row_begin(mat, i); j < csr_row_end(mat, i); j += 1) {
       printf("%lu\t", mat->c[j]);
@@ -26,10 +28,17 @@ static void print_csr(csr *mat) {
 
 static void bench(csr *adj) {
   double start = omp_get_wtime();
-  srand(0);
+  srand(1);
   usize n = 20;
   for (usize i = 0; i < n; i += 1) {
-    bfs_omp(adj, rand() % adj->n);
+    usize src = rand() % adj->n;
+    bfs_result s = bfs(adj, src);
+    bfs_result p = bfs_omp(adj, src);
+    assert(memcmp(s.distance, p.distance, adj->n) == 0);
+    free(s.distance);
+    free(p.distance);
+    free(s.parent);
+    free(p.parent);
   }
   double end = omp_get_wtime();
   double duration = end - start;

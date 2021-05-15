@@ -122,6 +122,7 @@ bfs_result bfs_omp(csr *adj, usize src) {
 
   frontier_free(f);
   bitmap_free(b);
+  free(degree);
 
   return (bfs_result){parent, distance};
 }
