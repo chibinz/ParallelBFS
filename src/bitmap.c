@@ -6,7 +6,7 @@
 #include "types.h"
 
 bitmap *bitmap_new(usize capacity) {
-  u32 *map = calloc((capacity / 32 + 1), sizeof(u32));
+  atomic_uint *map = calloc((capacity / 32 + 1), sizeof(atomic_uint));
   bitmap *ret = malloc(sizeof(bitmap));
 
   *ret = (bitmap){capacity, map};
@@ -31,7 +31,7 @@ bool bitmap_test_set(bitmap *b, usize n) {
   usize offset = n % 32;
   bool prev = !!((b->map[index] >> offset) & 1);
 
-  /// Guard to prevent unnecessary contention
+  // Guard to prevent unnecessary contention
   if (!prev) {
     prev = !!((atomic_fetch_or(&b->map[index], 1 << offset) >> offset) & 1);
   }

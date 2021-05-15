@@ -17,7 +17,7 @@ bfs_result bfs_omp(csr *adj, usize src) {
   // Scratch buffer for storing degrees of vertices in frontier
   usize *degree = malloc(sizeof(usize) * (adj->n + 1));
   usize *parent = malloc(sizeof(usize) * adj->n);
-  usize *distance = malloc(sizeof(usize) * adj->n);
+  usize *distance = calloc(adj->n, sizeof(usize));
 
   degree[0] = 0;
   distance[src] = 0;

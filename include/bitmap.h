@@ -1,12 +1,14 @@
 #pragma once
 
+#include <stdatomic.h>
 #include <stdbool.h>
 
 #include "types.h"
 
+
 typedef struct {
   usize capacity;
-  u32 *map;
+  atomic_uint *map;
 } bitmap;
 
 bitmap *bitmap_new(usize capacity);

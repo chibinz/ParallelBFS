@@ -21,7 +21,7 @@ bfs_result bfs(csr *adj, usize src) {
   queue *q = queue_new(adj->n);
   bitmap *b = bitmap_new(adj->n);
   usize *parent = malloc(sizeof(usize) * adj->n);
-  usize *distance = malloc(sizeof(usize) * adj->n);
+  usize *distance = calloc(adj->n, sizeof(usize));
 
   queue_push(q, src);
   while (!queue_empty(q)) {
