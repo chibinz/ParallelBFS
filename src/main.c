@@ -36,9 +36,9 @@ static void bench(csr *adj) {
     bfs_result p = bfs_omp(adj, src);
     assert(memcmp(s.distance, p.distance, adj->n) == 0);
     free(s.distance);
-    free(p.distance);
     free(s.parent);
     free(p.parent);
+    free(p.distance);
   }
   double end = omp_get_wtime();
   double duration = end - start;

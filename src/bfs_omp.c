@@ -2,12 +2,15 @@
 #include <omp.h>
 #include <stdatomic.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "bfs.h"
 #include "bitmap.h"
 #include "types.h"
+
+#define SENTINEL (usize)(-1)
 
 typedef struct {
   usize *node;
@@ -46,7 +49,7 @@ void frontier_cull(frontier *f) {
 
 #pragma omp parallel for
   for (usize i = 0; i < f->len; i += 1) {
-    index[i + 1] = (usize)(f->node[i] != -1);
+    index[i + 1] = (usize)(f->node[i] != SENTINEL);
   }
 
   prefix_sum(index, f->len + 1);
@@ -56,7 +59,7 @@ void frontier_cull(frontier *f) {
 
 #pragma omp parallel for
   for (usize i = 0; i < f->len; i += 1) {
-    if (f->node[i] != -1) {
+    if (f->node[i] != SENTINEL) {
       newnode[index[i]] = f->node[i];
     }
   }
@@ -78,14 +81,15 @@ bfs_result bfs_omp(csr *adj, usize src) {
 
   frontier *f = frontier_with_src(src);
   bitmap *b = bitmap_new(adj->n);
+
   // Scratch buffer for storing degrees of vertices in frontier
-  usize *degree = malloc(sizeof(usize) * adj->n);
+  usize *degree = malloc(sizeof(usize) * (adj->n + 1));
   usize *parent = malloc(sizeof(usize) * adj->n);
   usize *distance = malloc(sizeof(usize) * adj->n);
 
   degree[0] = 0;
   distance[src] = 0;
-  memset(parent, -1, sizeof(usize) * adj->n);
+  parent[src] = src;
 
   while (!frontier_empty(f)) {
 
@@ -104,13 +108,11 @@ bfs_result bfs_omp(csr *adj, usize src) {
       usize v = f->node[i], index = degree[i];
       for (usize j = 0; j < csr_row_len(adj, v); j += 1) {
         usize next = adj->c[csr_row_begin(adj, v) + j];
-        usize new = -1;
-        if (parent[next] == -1 &&
-            atomic_compare_exchange_weak(&parent[next], &new, v)) {
+        if (!bitmap_test_set(b, next)) {
           newf->node[index + j] = next;
           distance[next] = distance[v] + 1;
         } else {
-          newf->node[index + j] = -1;
+          newf->node[index + j] = SENTINEL;
         }
       }
     }
