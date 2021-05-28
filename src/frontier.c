@@ -1,3 +1,4 @@
+#include <omp.h>
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -9,6 +10,36 @@ void prefix_sum(usize *a, usize len) {
   for (usize i = 1; i < len; i += 1) {
     a[i] = a[i] + a[i - 1];
   }
+}
+
+void prefix_sum_omp(usize *a, usize len) {
+  usize *local;
+#pragma omp parallel
+  {
+    usize id = omp_get_thread_num();
+    usize n = omp_get_num_threads();
+#pragma omp single
+    local = malloc(sizeof *local * (n + 1)), local[0] = 0;
+
+    usize s = 0;
+#pragma omp for schedule(static) nowait
+    for (usize i = 0; i < len; i++) {
+      s += a[i];
+      a[i] = s;
+    }
+    local[id + 1] = s;
+
+#pragma omp barrier
+    usize offset = 0;
+    for (usize i = 0; i < id + 1; i++)
+      offset += local[i];
+
+#pragma omp for schedule(static)
+    for (usize i = 0; i < len; i++) {
+      a[i] += offset;
+    }
+  }
+  free(local);
 }
 
 frontier *frontier_new(usize n) {
@@ -39,7 +70,7 @@ void frontier_cull(frontier *f) {
     index[i + 1] = (usize)(f->node[i] != SENTINEL);
   }
 
-  prefix_sum(index, f->len + 1);
+  prefix_sum_omp(index, f->len + 1);
 
   usize newlen = index[f->len];
   usize *newnode = malloc(sizeof(usize) * newlen);

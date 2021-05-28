@@ -11,8 +11,9 @@ typedef struct {
   usize len;
 } frontier;
 
-/// TODO: Make it parallel
 void prefix_sum(usize *a, usize len);
+
+void prefix_sum_omp(usize *a, usize len);
 
 frontier *frontier_new(usize n);
 
