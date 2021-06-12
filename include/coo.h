@@ -33,7 +33,7 @@ coo *coo_new(u32 m, u32 n, u32 nz);
 coo *coo_from_mkt(FILE *mkt);
 
 /// Read from edge list file into coo representation
-coo *coo_from_edge(FILE *mkt);
+coo *coo_from_edge(FILE *edge, u32 n, u32 nz);
 
 /// Write coo matrix to matrix market file
 void coo_to_mkt(coo *mat, FILE *mkt);

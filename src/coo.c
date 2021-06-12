@@ -32,13 +32,12 @@ coo *coo_from_mkt(FILE *mkt) {
   return ret;
 }
 
-coo *coo_from_edge(FILE *edge) {
-  u32 m, n, nz, i = 0;
-  fscanf(edge, "%u %u %u\n", &m, &n, &nz);
+coo *coo_from_edge(FILE *edge, u32 n, u32 nz) {
+  u32 i = 0;
 
-  coo *ret = coo_new(m, n, nz);
+  coo *ret = coo_new(n, n, nz);
   while (fscanf(edge, "%u %u\n", &ret->tup[i].i, &ret->tup[i].j) != EOF) {
-    assert(ret->tup[i].i < m);
+    assert(ret->tup[i].i < n);
     assert(ret->tup[i].j < n);
     i += 1;
   }
