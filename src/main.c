@@ -73,13 +73,13 @@ int main(int argc, char **argv) {
   coo_sort(coo);
   csr *csr = csr_from_coo(coo);
 
-  printf("%s\n", argv[1]);
-  printf("%-16s%-16s%-16s%-16s\n", "32*Iter", "Mean/MEdges", "StdDev/MEdges",
-         "Wall/s");
-  bench_multiple(bfs, csr, 32, "Serial(Ts)");
+  // printf("%s\t", argv[1]);
+  // printf("%-16s%-16s%-16s%-16s\n", "32*Iter", "Mean/MEdges", "StdDev/MEdges",
+  //  "Wall/s");
+  // bench_multiple(bfs, csr, 32, "Serial(Ts)");
   bench_multiple(bfs_omp, csr, 32, "Parallel(Tp)");
-  omp_set_num_threads(1);
-  bench_multiple(bfs_omp, csr, 32, "Parallel(T1)");
+  // omp_set_num_threads(1);
+  // bench_multiple(bfs_omp, csr, 32, "Parallel(T1)");
 
   csr_free(csr);
   coo_free(coo);

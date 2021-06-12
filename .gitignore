@@ -6,6 +6,7 @@ build/
 perf.*
 
 # Benchmark files
+result*
 *.in
 *.out
 *.gz

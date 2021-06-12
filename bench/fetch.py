@@ -19,6 +19,9 @@ for (url, b) in zip(bench_urls, benches):
     subprocess.run(["gzip", "-dfk", b + ".txt.gz"]).check_returncode()
 
 for b in benches:
+    if os.path.exists(b + ".in"):
+        continue
+
     v = 0
     e = 0
     s = ""

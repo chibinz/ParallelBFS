@@ -16,7 +16,7 @@ coo *coo_new(u32 m, u32 n, u32 nz) {
 
 coo *coo_from_mkt(FILE *mkt) {
   u32 m, n, nz, i = 0;
-  fscanf(mkt, "%u %u %u\n", &m, &n, &nz);
+  assert(fscanf(mkt, "%u %u %u\n", &m, &n, &nz) != EOF);
 
   coo *ret = coo_new(m, n, nz);
   while (fscanf(mkt, "%u %u %u\n", &ret->tup[i].i, &ret->tup[i].j,
