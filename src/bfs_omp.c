@@ -60,3 +60,22 @@ bfs_result bfs_omp(csr *adj, usize src) {
 
   return (bfs_result){parent, distance};
 }
+
+usize bfs_bottom_up(csr *adj, bitmap *b) {
+  usize new = 0;
+
+#pragma omp parallel for reduction(+ : new)
+  for (usize v = 0; v < adj->n; v += 1) {
+    if (!bitmap_test(b, v)) {
+      for (usize i = csr_row_begin(adj, v); i < csr_row_end(adj, v); i += 1) {
+        if (bitmap_test(b, adj->c[i])) {
+          bitmap_set(b, v);
+          new += 1;
+          break;
+        }
+      }
+    }
+  }
+
+  return new;
+}
