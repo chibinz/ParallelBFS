@@ -7,9 +7,9 @@
 /// 3 - tuple containing single coordinate list matrix element
 typedef struct {
   /// Row index
-  usize i;
+  u32 i;
   /// Column index
-  usize j;
+  u32 j;
   /// Actual value
   u32 v;
 } coo_tup;
@@ -17,17 +17,17 @@ typedef struct {
 /// 'Coordinate List' representation of sparse matrix
 typedef struct matrix_coo {
   /// Number of rows
-  usize m;
+  u32 m;
   /// Number of columns
-  usize n;
+  u32 n;
   /// Number of non-zero values
-  usize nz;
+  u32 nz;
   /// Array of 3 - tuples
   coo_tup *tup;
 } coo;
 
 /// Allocate memory
-coo *coo_new(usize m, usize n, usize nz);
+coo *coo_new(u32 m, u32 n, u32 nz);
 
 /// Read from matrix market file into coo representation
 coo *coo_from_mkt(FILE *mkt);

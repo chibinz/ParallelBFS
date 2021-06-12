@@ -5,14 +5,14 @@
 #include "types.h"
 
 typedef struct {
-  usize front;
-  usize end;
-  usize capacity;
-  usize *data;
+  u32 front;
+  u32 end;
+  u32 capacity;
+  u32 *data;
 } queue;
 
-queue *queue_new(usize capacity) {
-  usize *data = malloc(sizeof(usize) * capacity);
+queue *queue_new(u32 capacity) {
+  u32 *data = malloc(sizeof(u32) * capacity);
   queue *ret = malloc(sizeof(queue));
 
   *ret = (queue){0, 0, capacity, data};
@@ -20,14 +20,14 @@ queue *queue_new(usize capacity) {
   return ret;
 }
 
-void queue_push(queue *q, usize e) {
+void queue_push(queue *q, u32 e) {
   assert(q->end < q->capacity);
 
   q->data[q->end] = e;
   q->end += 1;
 }
 
-usize queue_pop(queue *q) {
+u32 queue_pop(queue *q) {
   assert(q->front != q->end);
 
   q->front += 1;

@@ -6,27 +6,27 @@
 /// 'Compressed Sparse Row' representation of sparse matrix
 typedef struct matrix_csr {
   /// Number of rows
-  usize m;
+  u32 m;
   /// Number of columns
-  usize n;
+  u32 n;
   /// Number of non-zero elements
-  usize nz;
+  u32 nz;
   /// Top level column pointers
-  usize *r;
+  u32 *r;
   /// Secondary row indices
-  usize *c;
+  u32 *c;
   /// Actual values
   u32 *v;
 } csr;
 
-csr *csr_new(usize m, usize n, usize nz);
+csr *csr_new(u32 m, u32 n, u32 nz);
 
 csr *csr_from_coo(coo *mat);
 
-usize csr_row_begin(csr *mat, usize i);
+u32 csr_row_begin(csr *mat, u32 i);
 
-usize csr_row_end(csr *mat, usize i);
+u32 csr_row_end(csr *mat, u32 i);
 
-usize csr_row_len(csr *mat, usize i);
+u32 csr_row_len(csr *mat, u32 i);
 
 void csr_free(csr *mat);

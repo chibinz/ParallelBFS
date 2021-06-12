@@ -5,7 +5,7 @@
 #include "coo.h"
 #include "types.h"
 
-coo *coo_new(usize m, usize n, usize nz) {
+coo *coo_new(u32 m, u32 n, u32 nz) {
   coo_tup *tup = malloc(sizeof(coo_tup) * nz);
   coo *ret = malloc(sizeof(coo));
 
@@ -15,11 +15,11 @@ coo *coo_new(usize m, usize n, usize nz) {
 }
 
 coo *coo_from_mkt(FILE *mkt) {
-  usize m, n, nz, i = 0;
-  fscanf(mkt, "%lu %lu %lu\n", &m, &n, &nz);
+  u32 m, n, nz, i = 0;
+  fscanf(mkt, "%u %u %u\n", &m, &n, &nz);
 
   coo *ret = coo_new(m, n, nz);
-  while (fscanf(mkt, "%lu %lu %u\n", &ret->tup[i].i, &ret->tup[i].j,
+  while (fscanf(mkt, "%u %u %u\n", &ret->tup[i].i, &ret->tup[i].j,
                 &ret->tup[i].v) != EOF) {
     // Matrix indices start from 1...
     // ret->tup[i].i -= 1;
@@ -33,11 +33,11 @@ coo *coo_from_mkt(FILE *mkt) {
 }
 
 coo *coo_from_edge(FILE *edge) {
-  usize m, n, nz, i = 0;
-  fscanf(edge, "%lu %lu %lu\n", &m, &n, &nz);
+  u32 m, n, nz, i = 0;
+  fscanf(edge, "%u %u %u\n", &m, &n, &nz);
 
   coo *ret = coo_new(m, n, nz);
-  while (fscanf(edge, "%lu %lu\n", &ret->tup[i].i, &ret->tup[i].j) != EOF) {
+  while (fscanf(edge, "%u %u\n", &ret->tup[i].i, &ret->tup[i].j) != EOF) {
     assert(ret->tup[i].i < m);
     assert(ret->tup[i].j < n);
     i += 1;
@@ -47,10 +47,10 @@ coo *coo_from_edge(FILE *edge) {
 }
 
 void coo_to_mkt(coo *mat, FILE *mkt) {
-  fprintf(mkt, "%lu\t%lu\t%lu\n", mat->m, mat->n, mat->nz);
+  fprintf(mkt, "%u\t%u\t%u\n", mat->m, mat->n, mat->nz);
 
-  for (usize i = 0; i < mat->nz; i += 1) {
-    fprintf(mkt, "%lu\t%lu\t%u\n", mat->tup[i].i, mat->tup[i].j, mat->tup[i].v);
+  for (u32 i = 0; i < mat->nz; i += 1) {
+    fprintf(mkt, "%u\t%u\t%u\n", mat->tup[i].i, mat->tup[i].j, mat->tup[i].v);
   }
 }
 
@@ -62,8 +62,8 @@ void coo_free(coo *mat) {
 static int cmp_func(const void *a, const void *b) {
   const coo_tup *ta = a;
   const coo_tup *tb = b;
-  usize di = ta->i - tb->i;
-  usize dj = ta->j - tb->j;
+  u32 di = ta->i - tb->i;
+  u32 dj = ta->j - tb->j;
 
   return di == 0 ? dj : di;
 }

@@ -5,7 +5,7 @@
 #include "bitmap.h"
 #include "types.h"
 
-bitmap *bitmap_new(usize capacity) {
+bitmap *bitmap_new(u32 capacity) {
   atomic_uint *map = calloc((capacity / 32 + 1), sizeof(atomic_uint));
   bitmap *ret = malloc(sizeof(bitmap));
 
@@ -14,21 +14,21 @@ bitmap *bitmap_new(usize capacity) {
   return ret;
 }
 
-void bitmap_set(bitmap *b, usize n) {
-  usize index = n / 32;
-  usize offset = n % 32;
+void bitmap_set(bitmap *b, u32 n) {
+  u32 index = n / 32;
+  u32 offset = n % 32;
   b->map[index] |= 1 << offset;
 }
 
-bool bitmap_test(bitmap *b, usize n) {
-  usize index = n / 32;
-  usize offset = n % 32;
+bool bitmap_test(bitmap *b, u32 n) {
+  u32 index = n / 32;
+  u32 offset = n % 32;
   return !!((b->map[index] >> offset) & 1);
 }
 
-bool bitmap_test_set(bitmap *b, usize n) {
-  usize index = n / 32;
-  usize offset = n % 32;
+bool bitmap_test_set(bitmap *b, u32 n) {
+  u32 index = n / 32;
+  u32 offset = n % 32;
   bool prev = !!((b->map[index] >> offset) & 1);
 
   // Guard to prevent unnecessary contention

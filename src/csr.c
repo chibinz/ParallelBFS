@@ -7,17 +7,17 @@
 #include "types.h"
 
 void write_csr(csr *mat, FILE *f) {
-  for (usize i = 0; i < mat->m; i += 1) {
-    for (usize j = csr_row_begin(mat, i); j < csr_row_end(mat, i); j += 1) {
-      fprintf(f, "%lu\t", mat->c[j]);
+  for (u32 i = 0; i < mat->m; i += 1) {
+    for (u32 j = csr_row_begin(mat, i); j < csr_row_end(mat, i); j += 1) {
+      fprintf(f, "%u\t", mat->c[j]);
     }
     fprintf(f, "\n");
   }
 }
 
-csr *csr_new(usize m, usize n, usize nz) {
-  usize *r = malloc(sizeof(usize) * (m + 1));
-  usize *c = malloc(sizeof(usize) * (nz));
+csr *csr_new(u32 m, u32 n, u32 nz) {
+  u32 *r = malloc(sizeof(u32) * (m + 1));
+  u32 *c = malloc(sizeof(u32) * (nz));
   u32 *v = malloc(sizeof(u32) * (nz));
   csr *ret = malloc(sizeof(csr));
 
@@ -30,27 +30,27 @@ csr *csr_new(usize m, usize n, usize nz) {
 csr *csr_from_coo(coo *mat) {
   csr *ret = csr_new(mat->m, mat->n, mat->nz);
 
-  memset(ret->r, 0, sizeof(usize) * (mat->m + 1));
+  memset(ret->r, 0, sizeof(u32) * (mat->m + 1));
 
-  for (usize i = 0; i < mat->nz; i += 1) {
+  for (u32 i = 0; i < mat->nz; i += 1) {
     ret->r[mat->tup[i].i + 1] += 1;
     ret->c[i] = mat->tup[i].j;
     ret->v[i] = mat->tup[i].v;
   }
 
   // Prefix sum on `csr->r`
-  for (usize i = 0; i < mat->m; i += 1) {
+  for (u32 i = 0; i < mat->m; i += 1) {
     ret->r[i + 1] += ret->r[i];
   }
 
   return ret;
 }
 
-usize csr_row_begin(csr *mat, usize i) { return mat->r[i]; }
+u32 csr_row_begin(csr *mat, u32 i) { return mat->r[i]; }
 
-usize csr_row_end(csr *mat, usize i) { return mat->r[i + 1]; }
+u32 csr_row_end(csr *mat, u32 i) { return mat->r[i + 1]; }
 
-usize csr_row_len(csr *mat, usize i) {
+u32 csr_row_len(csr *mat, u32 i) {
   return csr_row_end(mat, i) - csr_row_begin(mat, i);
 }
 

@@ -7,7 +7,7 @@
 #include "frontier.h"
 #include "types.h"
 
-bfs_result bfs_omp(csr *adj, usize src) {
+bfs_result bfs_omp(csr *adj, u32 src) {
   // Adjacency matrix should be square matrix
   assert(adj->m == adj->n);
 
@@ -15,9 +15,9 @@ bfs_result bfs_omp(csr *adj, usize src) {
   bitmap *b = bitmap_new(adj->n);
 
   // Scratch buffer for storing degrees of vertices in frontier
-  usize *degree = malloc(sizeof(usize) * (adj->n + 1));
-  usize *parent = malloc(sizeof(usize) * adj->n);
-  usize *distance = calloc(adj->n, sizeof(usize));
+  u32 *degree = malloc(sizeof(u32) * (adj->n + 1));
+  u32 *parent = malloc(sizeof(u32) * adj->n);
+  u32 *distance = calloc(adj->n, sizeof(u32));
 
   degree[0] = 0;
   distance[src] = 0;
@@ -26,7 +26,7 @@ bfs_result bfs_omp(csr *adj, usize src) {
   while (!frontier_empty(f)) {
     // Collect vertex degrees
 #pragma omp parallel for
-    for (usize i = 0; i < f->len; i += 1) {
+    for (u32 i = 0; i < f->len; i += 1) {
       degree[i + 1] = adj->r[f->node[i] + 1] - adj->r[f->node[i]];
     }
 
@@ -35,11 +35,11 @@ bfs_result bfs_omp(csr *adj, usize src) {
     frontier *newf = frontier_new(degree[f->len]);
 
 #pragma omp parallel for schedule(guided)
-    for (usize i = 0; i < f->len; i += 1) {
-      usize v = f->node[i], index = degree[i];
-      for (usize j = 0; j < csr_row_len(adj, v); j += 1) {
+    for (u32 i = 0; i < f->len; i += 1) {
+      u32 v = f->node[i], index = degree[i];
+      for (u32 j = 0; j < csr_row_len(adj, v); j += 1) {
         /// FIXME: Frequent cache miss here... Graph compression?
-        usize next = adj->c[csr_row_begin(adj, v) + j];
+        u32 next = adj->c[csr_row_begin(adj, v) + j];
         if (!bitmap_test_set(b, next)) {
           newf->node[index + j] = next;
           distance[next] = distance[v] + 1;
@@ -61,13 +61,13 @@ bfs_result bfs_omp(csr *adj, usize src) {
   return (bfs_result){parent, distance};
 }
 
-usize bfs_bottom_up(csr *adj, bitmap *b) {
-  usize new = 0;
+u32 bfs_bottom_up(csr *adj, bitmap *b) {
+  u32 new = 0;
 
 #pragma omp parallel for reduction(+ : new)
-  for (usize v = 0; v < adj->n; v += 1) {
+  for (u32 v = 0; v < adj->n; v += 1) {
     if (!bitmap_test(b, v)) {
-      for (usize i = csr_row_begin(adj, v); i < csr_row_end(adj, v); i += 1) {
+      for (u32 i = csr_row_begin(adj, v); i < csr_row_end(adj, v); i += 1) {
         if (bitmap_test(b, adj->c[i])) {
           bitmap_set(b, v);
           new += 1;

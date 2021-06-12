@@ -4,20 +4,20 @@
 
 #include "types.h"
 
-#define SENTINEL (usize)(-1)
+#define SENTINEL (u32)(-1)
 
 typedef struct {
-  usize *node;
-  usize len;
+  u32 *node;
+  u32 len;
 } frontier;
 
-void prefix_sum(usize *a, usize len);
+void prefix_sum(u32 *a, u32 len);
 
-void prefix_sum_omp(usize *a, usize len);
+void prefix_sum_omp(u32 *a, u32 len);
 
-frontier *frontier_new(usize n);
+frontier *frontier_new(u32 n);
 
-frontier *frontier_with_src(usize src);
+frontier *frontier_with_src(u32 src);
 
 bool frontier_empty(frontier *f);
 

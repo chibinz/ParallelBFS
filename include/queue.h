@@ -3,17 +3,17 @@
 #include "types.h"
 
 typedef struct {
-  usize front;
-  usize end;
-  usize capacity;
-  usize *data;
+  u32 front;
+  u32 end;
+  u32 capacity;
+  u32 *data;
 } queue;
 
-queue *queue_new(usize n);
+queue *queue_new(u32 n);
 
-void queue_push(queue *q, usize e);
+void queue_push(queue *q, u32 e);
 
-usize queue_pop(queue *q);
+u32 queue_pop(queue *q);
 
 void queue_free(queue *q);
 
