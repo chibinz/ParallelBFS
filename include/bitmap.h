@@ -14,7 +14,7 @@ bitmap *bitmap_new(usize capacity);
 
 void bitmap_set(bitmap *b, usize n);
 
-bool bitmap_get(bitmap *b, usize n);
+bool bitmap_test(bitmap *b, usize n);
 
 /// Atomically changes the state of a bit to set (true)
 /// and returns the value it held before.

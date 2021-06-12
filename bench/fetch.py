@@ -1,13 +1,11 @@
 import subprocess
 import os.path
-import re
 
-dataset_url = "https://snap.stanford.edu/data/"
 bench_urls = [
     "https://snap.stanford.edu/data/web-Stanford.txt.gz",
     "https://snap.stanford.edu/data/roadNet-CA.txt.gz",
     "https://snap.stanford.edu/data/soc-LiveJournal1.txt.gz",
-    "https://snap.stanford.edu/data/bigdata/communities/com-orkut.all.cmty.txt.gz",
+    "https://snap.stanford.edu/data/bigdata/communities/com-orkut.ungraph.txt.gz",
 ]
 
 benches = list(map(lambda s: s.split("/")[-1][:-7], bench_urls))
@@ -20,7 +18,7 @@ for (url, b) in zip(bench_urls, benches):
     subprocess.run(["wget", "-nc", url]).check_returncode()
     subprocess.run(["gzip", "-dfk", b + ".txt.gz"]).check_returncode()
 
-for b in benches[:3]:
+for b in benches:
     v = 0
     e = 0
     s = ""

@@ -20,7 +20,7 @@ void bitmap_set(bitmap *b, usize n) {
   b->map[index] |= 1 << offset;
 }
 
-bool bitmap_get(bitmap *b, usize n) {
+bool bitmap_test(bitmap *b, usize n) {
   usize index = n / 32;
   usize offset = n % 32;
   return !!((b->map[index] >> offset) & 1);

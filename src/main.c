@@ -18,7 +18,7 @@ static coo_tup list[] = {
 
 static coo simple = {6, 6, 8, list};
 
-static void test(csr *adj) {
+void test(csr *adj) {
   bfs_result s = bfs(adj, 1);
   bfs_result p = bfs_omp(adj, 1);
   assert(memcmp(s.distance, p.distance, adj->n) == 0);
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
     coo_sort(&simple);
     csr *csr = csr_from_coo(coo);
 
-    test(csr);
+    // test(csr);
     printf("%s\n", argv[i]);
     printf("%-16s%-16s%-16s%-16s\n", "32*Iter", "Mean/MEdges", "StdDev/MEdges",
            "Wall/s");

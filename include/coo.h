@@ -32,6 +32,9 @@ coo *coo_new(usize m, usize n, usize nz);
 /// Read from matrix market file into coo representation
 coo *coo_from_mkt(FILE *mkt);
 
+/// Read from edge list file into coo representation
+coo *coo_from_edge(FILE *mkt);
+
 /// Write coo matrix to matrix market file
 void coo_to_mkt(coo *mat, FILE *mkt);
 

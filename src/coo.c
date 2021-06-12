@@ -32,6 +32,20 @@ coo *coo_from_mkt(FILE *mkt) {
   return ret;
 }
 
+coo *coo_from_edge(FILE *edge) {
+  usize m, n, nz, i = 0;
+  fscanf(edge, "%lu %lu %lu\n", &m, &n, &nz);
+
+  coo *ret = coo_new(m, n, nz);
+  while (fscanf(edge, "%lu %lu\n", &ret->tup[i].i, &ret->tup[i].j) != EOF) {
+    assert(ret->tup[i].i < m);
+    assert(ret->tup[i].j < n);
+    i += 1;
+  }
+
+  return ret;
+}
+
 void coo_to_mkt(coo *mat, FILE *mkt) {
   fprintf(mkt, "%lu\t%lu\t%lu\n", mat->m, mat->n, mat->nz);
 
