@@ -20,4 +20,12 @@ bool bitmap_test(bitmap *b, u32 n);
 /// and returns the value it held before.
 bool bitmap_test_set(bitmap *b, u32 n);
 
+void bitmap_clear(bitmap *b);
+
+void bitmap_merge(bitmap *self, bitmap *other);
+
 void bitmap_free(bitmap *b);
+
+u32 bitmap2array(bitmap *b, u32 *array);
+
+void array2bitmap(u32 *array, bitmap *b, u32 n);

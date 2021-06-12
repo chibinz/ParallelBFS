@@ -46,11 +46,11 @@ csr *csr_from_coo(coo *mat) {
   return ret;
 }
 
-u32 csr_row_begin(csr *mat, u32 i) { return mat->r[i]; }
+u32 csr_row_begin(const csr *mat, u32 i) { return mat->r[i]; }
 
-u32 csr_row_end(csr *mat, u32 i) { return mat->r[i + 1]; }
+u32 csr_row_end(const csr *mat, u32 i) { return mat->r[i + 1]; }
 
-u32 csr_row_len(csr *mat, u32 i) {
+u32 csr_row_len(const csr *mat, u32 i) {
   return csr_row_end(mat, i) - csr_row_begin(mat, i);
 }
 

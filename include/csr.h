@@ -23,10 +23,10 @@ csr *csr_new(u32 m, u32 n, u32 nz);
 
 csr *csr_from_coo(coo *mat);
 
-u32 csr_row_begin(csr *mat, u32 i);
+u32 csr_row_begin(const csr *mat, u32 i);
 
-u32 csr_row_end(csr *mat, u32 i);
+u32 csr_row_end(const csr *mat, u32 i);
 
-u32 csr_row_len(csr *mat, u32 i);
+u32 csr_row_len(const csr *mat, u32 i);
 
 void csr_free(csr *mat);
