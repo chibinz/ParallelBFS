@@ -18,4 +18,4 @@ jobs:
     - name: build
       run: |
         meson setup build
-        meson compile -C build
+        ninja -C build
