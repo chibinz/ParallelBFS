@@ -11,7 +11,8 @@ bfs_result bfs_omp(csr *adj, u32 src) {
   // Adjacency matrix should be square matrix
   assert(adj->m == adj->n);
 
-  frontier *newf, *f = frontier_with_src(src);
+  frontier *f = frontier_new(adj->nz);
+  frontier *fnext = frontier_new(adj->nz);
   bitmap *b = bitmap_new(adj->n);
   bitmap *bnext = bitmap_new(adj->n);
 
@@ -42,7 +43,7 @@ bfs_result bfs_omp(csr *adj, u32 src) {
 
       // Run prefix sum on degree on array
       prefix_sum(degree, f->len + 1);
-      newf = frontier_new(degree[f->len]);
+      fnext->len = degree[f->len];
 
 #pragma omp parallel for schedule(guided) reduction(+: mf, nf) reduction(- : mu)
       for (u32 i = 0; i < f->len; i += 1) {
@@ -51,21 +52,23 @@ bfs_result bfs_omp(csr *adj, u32 src) {
           /// FIXME: Frequent cache miss here... Graph compression?
           u32 next = adj->c[csr_row_begin(adj, v) + j];
           if (!bitmap_test_set(b, next)) {
-            newf->node[index + j] = next;
+            fnext->node[index + j] = next;
             distance[next] = distance[v] + 1;
 
             mf += csr_row_len(adj, next);
             mu -= csr_row_len(adj, next);
             nf += 1;
           } else {
-            newf->node[index + j] = SENTINEL;
+            fnext->node[index + j] = SENTINEL;
           }
         }
       }
 
-      frontier_free(f);
-      frontier_cull(newf);
-      f = newf;
+      // frontier_free(f);
+      frontier_cull(f, fnext);
+      frontier *tmp = fnext;
+      fnext = f;
+      f = tmp;
     } else {
       /// Bottom up travesal
       bitmap_clear(bnext);
@@ -96,8 +99,6 @@ bfs_result bfs_omp(csr *adj, u32 src) {
       }
     } else {
       if (nf < adj->n / 24) {
-        free(f->node);
-        f->node = malloc(sizeof(u32) * adj->n);
         f->len = bitmap2array(bnext, f->node);
         top_down = true;
       }
@@ -113,27 +114,4 @@ bfs_result bfs_omp(csr *adj, u32 src) {
   free(degree);
 
   return (bfs_result){parent, distance};
-}
-
-u32 bfs_bottom_up(csr *adj, bitmap *visited, bitmap *next) {
-  u32 new = 0;
-
-  bitmap_clear(next);
-
-#pragma omp parallel for reduction(+ : new)
-  for (u32 v = 0; v < adj->n; v += 1) {
-    if (!bitmap_test(visited, v)) {
-      for (u32 i = csr_row_begin(adj, v); i < csr_row_end(adj, v); i += 1) {
-        if (bitmap_test(visited, adj->c[i])) {
-          bitmap_set(next, v);
-          new += 1;
-          break;
-        }
-      }
-    }
-  }
-
-  bitmap_merge(visited, next);
-
-  return new;
 }

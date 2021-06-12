@@ -74,6 +74,7 @@ u32 bitmap2array(bitmap *b, u32 *array) {
 }
 
 void array2bitmap(u32 *array, bitmap *b, u32 n) {
+#pragma omp parallel for
   for (u32 i = 0; i < n; i += 1) {
     bitmap_set(b, array[i]);
   }

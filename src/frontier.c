@@ -61,7 +61,7 @@ frontier *frontier_with_src(u32 src) {
 
 bool frontier_empty(frontier *f) { return f->len == 0; }
 
-void frontier_cull(frontier *f) {
+void frontier_cull(frontier *f, frontier *fnext) {
   u32 *index = malloc(sizeof(u32) * (f->len + 1));
   index[0] = 0;
 
@@ -71,21 +71,16 @@ void frontier_cull(frontier *f) {
   }
 
   prefix_sum_omp(index, f->len + 1);
-
-  u32 newlen = index[f->len];
-  u32 *newnode = malloc(sizeof(u32) * newlen);
+  fnext->len = index[f->len];
 
 #pragma omp parallel for
   for (u32 i = 0; i < f->len; i += 1) {
     if (f->node[i] != SENTINEL) {
-      newnode[index[i]] = f->node[i];
+      fnext->node[index[i]] = f->node[i];
     }
   }
 
   free(index);
-  free(f->node);
-  f->node = newnode;
-  f->len = newlen;
 }
 
 void frontier_free(frontier *f) {

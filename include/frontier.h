@@ -21,6 +21,6 @@ frontier *frontier_with_src(u32 src);
 
 bool frontier_empty(frontier *f);
 
-void frontier_cull(frontier *f);
+void frontier_cull(frontier *f, frontier *fnext);
 
 void frontier_free(frontier *f);

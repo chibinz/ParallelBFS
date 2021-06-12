@@ -38,6 +38,7 @@ static double bench_one(bfs_func func, csr *adj, u32 src) {
 }
 
 static void bench_multiple(bfs_func func, csr *adj, u32 n, char *name) {
+  srand(0xC5121);
   double sum = 0.0, sum2 = 0.0;
   for (u32 i = 0; i < n; i += 1) {
     double dt = bench_one(func, adj, rand() % adj->n);
@@ -72,7 +73,6 @@ int main(int argc, char **argv) {
   coo_sort(coo);
   csr *csr = csr_from_coo(coo);
 
-  // test(csr);
   printf("%s\n", argv[1]);
   printf("%-16s%-16s%-16s%-16s\n", "32*Iter", "Mean/MEdges", "StdDev/MEdges",
          "Wall/s");
