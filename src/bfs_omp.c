@@ -31,6 +31,9 @@ bfs_result bfs_omp(csr *adj, u32 src) {
   distance[src] = 0;
   parent[src] = src;
 
+  f->node[0] = src;
+  f->len = 1;
+
   while (!(top_down && frontier_empty(f))) {
     // Collect vertex degrees
 
@@ -49,7 +52,7 @@ bfs_result bfs_omp(csr *adj, u32 src) {
       for (u32 i = 0; i < f->len; i += 1) {
         u32 v = f->node[i], index = degree[i];
         for (u32 j = 0; j < csr_row_len(adj, v); j += 1) {
-          /// FIXME: Frequent cache miss here... Graph compression?
+          /// \todo: Frequent cache miss here... Graph compression?
           u32 next = adj->c[csr_row_begin(adj, v) + j];
           if (!bitmap_test_set(b, next)) {
             fnext->node[index + j] = next;
@@ -64,11 +67,7 @@ bfs_result bfs_omp(csr *adj, u32 src) {
         }
       }
 
-      // frontier_free(f);
-      frontier_cull(f, fnext);
-      frontier *tmp = fnext;
-      fnext = f;
-      f = tmp;
+      frontier_cull(fnext, f);
     } else {
       /// Bottom up travesal
       bitmap_clear(bnext);
@@ -77,6 +76,7 @@ bfs_result bfs_omp(csr *adj, u32 src) {
       for (u32 v = 0; v < adj->n; v += 1) {
         if (!bitmap_test(b, v)) {
           for (u32 i = csr_row_begin(adj, v); i < csr_row_end(adj, v); i += 1) {
+            /// \todo: Frequent cache miss here too... 40% Global, 22% LLC...
             if (bitmap_test(b, adj->c[i])) {
               bitmap_set(bnext, v);
               distance[v] = distance[adj->c[i]] + 1;
@@ -109,6 +109,7 @@ bfs_result bfs_omp(csr *adj, u32 src) {
   }
 
   frontier_free(f);
+  frontier_free(fnext);
   bitmap_free(b);
   bitmap_free(bnext);
   free(degree);
