@@ -18,6 +18,15 @@ python3 bench.py
 ```
 
 ## Benchmark
+Config   | Value
+-------- | -----
+CPU      | Intel Xeon E5-2690 v4 @ 2.60GHz (14 Cores / 28 Threads)
+Memory   | 252 GiB
+Distro   | Ubuntu 18.04
+Kernel   | 3.10.0
+Compiler | Clang 11.0
+Opt      | -O3
+OpenMP   | libomp 5
 
 ## Optimizations
 ### Atomic bitmap
