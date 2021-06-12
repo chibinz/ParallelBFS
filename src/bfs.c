@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "bfs.h"
 #include "bitmap.h"
@@ -23,12 +24,14 @@ bfs_result bfs(csr *adj, u32 src) {
   u32 *parent = malloc(sizeof(u32) * adj->n);
   u32 *distance = calloc(adj->n, sizeof(u32));
 
+  memset(parent, -1, sizeof(u32) * adj->n);
+
   queue_push(q, src);
   while (!queue_empty(q)) {
     u32 v = queue_pop(q);
     for (u32 j = csr_row_begin(adj, v); j < csr_row_end(adj, v); j += 1) {
       u32 next = adj->c[j];
-      if (!bitmap_test_set(b, next)) {
+      if (parent[next] = (u32)(-1)) {
         queue_push(q, next);
         parent[next] = v;
         distance[next] = distance[v] + 1;
